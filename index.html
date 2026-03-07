@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Ascension Software — We build, run, and drive results through custom email retention systems for growing e-commerce brands.">
+  <title>Ascension Software | Email Marketing Agency</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Calendly widget CSS -->
+  <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
+
+  <!-- Site styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+  <!-- Full-page mouse tracer canvas -->
+  <canvas id="tracer-canvas" aria-hidden="true"></canvas>
+
+  <!-- Custom cursor dot -->
+  <div class="cursor" id="custom-cursor" aria-hidden="true"></div>
+
+  <!-- Blue flash overlay (outside intro so it persists as intro is removed) -->
+  <div id="warp-flash" aria-hidden="true"></div>
+
+  <!-- ============================================================
+       INTRO SCREEN — Gmail Dark Mock
+       ============================================================ -->
+  <div id="intro-screen" role="presentation" aria-hidden="true">
+    <div class="gmail-ui">
+
+      <!-- Top bar -->
+      <div class="gmail-top">
+        <div class="gmail-top__left">
+          <div class="gmail-hamburger" aria-hidden="true">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="gmail-logo">
+            <!-- Gmail M envelope logo -->
+            <svg class="gmail-logo__icon" viewBox="0 0 75 58" fill="none" aria-hidden="true">
+              <rect width="75" height="58" rx="4" fill="#1f1f1f"/>
+              <path d="M6 10L37.5 32L69 10" stroke="#EA4335" stroke-width="4" stroke-linecap="round"/>
+              <rect x="4" y="10" width="67" height="38" rx="2" fill="none" stroke="#5f6368" stroke-width="1.5"/>
+              <path d="M4 10L37.5 34L71 10" fill="none"/>
+              <path d="M4 10L4 48H71V10L37.5 34L4 10Z" fill="#2d2d2d" stroke="#5f6368" stroke-width="1"/>
+              <path d="M4 10L37.5 34L71 10" stroke="#EA4335" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span class="gmail-logo__text">Gmail</span>
+          </div>
+        </div>
+
+        <div class="gmail-search-bar" aria-hidden="true">
+          <div class="gmail-search-bar__icon">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="m21 21-4.35-4.35"/>
+            </svg>
+          </div>
+          <span class="gmail-search-bar__text">Search in mail</span>
+        </div>
+
+        <div class="gmail-top__right">
+          <div class="gmail-top__avatar" aria-hidden="true">A</div>
+        </div>
+      </div>
+
+      <!-- Body -->
+      <div class="gmail-body">
+
+        <!-- Sidebar -->
+        <aside class="gmail-sidebar" aria-hidden="true">
+          <button class="gmail-compose" tabindex="-1">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+              <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4z"/>
+            </svg>
+            Compose
+          </button>
+          <nav class="gmail-nav" aria-hidden="true">
+            <a class="gmail-nav__link is-active" tabindex="-1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+                <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+              </svg>
+              Inbox
+              <span class="gmail-nav__badge" id="gmail-badge"></span>
+            </a>
+            <a class="gmail-nav__link" tabindex="-1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+              </svg>
+              Starred
+            </a>
+            <a class="gmail-nav__link" tabindex="-1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"/>
+                <polyline points="12 6 12 12 16 14"/>
+              </svg>
+              Snoozed
+            </a>
+            <a class="gmail-nav__link" tabindex="-1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <line x1="22" y1="2" x2="11" y2="13"/>
+                <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+              </svg>
+              Sent
+            </a>
+            <a class="gmail-nav__link" tabindex="-1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+              </svg>
+              Drafts
+            </a>
+          </nav>
+        </aside>
+
+        <!-- Main inbox area -->
+        <div class="gmail-main">
+
+          <!-- Tabs -->
+          <div class="gmail-tab-bar" aria-hidden="true">
+            <button class="gmail-tab-btn is-active" tabindex="-1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/>
+                <path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/>
+              </svg>
+              <span>Primary</span>
+            </button>
+            <button class="gmail-tab-btn" tabindex="-1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 2 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+              </svg>
+              <span>Promotions</span>
+            </button>
+            <button class="gmail-tab-btn" tabindex="-1">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                <circle cx="9" cy="7" r="4"/>
+                <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+              </svg>
+              <span>Social</span>
+            </button>
+          </div>
+
+          <!-- Inbox content -->
+          <div class="gmail-inbox">
+
+            <!-- Empty state (shown first) -->
+            <div class="gmail-empty" id="gmail-empty" aria-live="polite">
+              <svg class="gmail-empty__icon" viewBox="0 0 100 80" fill="none" aria-hidden="true">
+                <rect x="8" y="22" width="84" height="52" rx="5" fill="#2d2d2d" stroke="#444" stroke-width="1.5"/>
+                <path d="M8 30 L50 54 L92 30" stroke="#444" stroke-width="1.5"/>
+                <circle cx="78" cy="18" r="14" fill="#1a3a6c"/>
+                <path d="M72 18 L77 23 L86 12" stroke="#60a5fa" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+              <p class="gmail-empty__title">Your Primary tab is empty</p>
+              <p class="gmail-empty__sub">Emails will appear here as they arrive.</p>
+            </div>
+
+            <!-- Email rows injected by JS -->
+            <div class="gmail-email-list" id="gmail-email-list"></div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Warp streaks canvas (inside intro, z-indexed above Gmail UI) -->
+    <canvas id="warp-canvas" aria-hidden="true"></canvas>
+  </div>
+
+  <!-- ============================================================
+       HEADER
+       ============================================================ -->
+  <header class="site-header" id="site-header">
+    <a href="#hero" class="site-header__logo" aria-label="Ascension Software — home">
+      Ascension Software
+    </a>
+
+    <nav class="site-header__nav" aria-label="Primary navigation">
+      <a class="site-header__link" href="#hero">Home</a>
+      <a class="site-header__link" href="#features">Features</a>
+      <a class="site-header__link" href="#pricing">Pricing</a>
+      <a class="site-header__link" href="#contact">Contact</a>
+    </nav>
+
+    <a class="btn btn--primary site-header__cta" href="#book">Book a Call</a>
+
+    <button
+      class="site-header__burger"
+      id="menu-toggle"
+      aria-label="Toggle navigation menu"
+      aria-expanded="false"
+      aria-controls="mobile-nav"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <!-- Mobile navigation drawer -->
+  <nav class="mobile-nav" id="mobile-nav" aria-hidden="true" aria-label="Mobile navigation">
+    <a class="mobile-nav__link" href="#hero">Home</a>
+    <a class="mobile-nav__link" href="#features">Features</a>
+    <a class="mobile-nav__link" href="#pricing">Pricing</a>
+    <a class="mobile-nav__link" href="#contact">Contact</a>
+    <a class="btn btn--primary" href="#book" style="text-align:center;">Book a Call</a>
+  </nav>
+
+  <main>
+
+    <!-- ============================================================
+         HERO
+         ============================================================ -->
+    <section class="hero" id="hero">
+
+      <!-- Orbital rings background -->
+      <div class="hero-rings" aria-hidden="true">
+        <div class="hr hr-1"><span class="hr-dot"></span><span class="hr-dot hr-dot--b"></span></div>
+        <div class="hr hr-2"><span class="hr-dot"></span></div>
+        <div class="hr hr-3"><span class="hr-dot"></span><span class="hr-dot hr-dot--b"></span><span class="hr-dot hr-dot--c"></span></div>
+        <div class="hr hr-4"><span class="hr-dot hr-dot--b"></span></div>
+        <div class="hr hr-5"></div>
+        <div class="hr hr-6"></div>
+        <div class="hr-pulse"></div>
+      </div>
+
+      <div class="hero__content reveal">
+
+        <!-- Social proof row -->
+        <div class="hero__subhead-row">
+          <div class="hero__stars" aria-label="5 stars">★★★★★</div>
+          <p class="hero__quote">"The next generation of email retention systems."</p>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="hero__title">
+          Scale Your Email Marketing
+          <br>
+          <span class="hero__accent">To New Heights</span>
+        </h1>
+
+        <!-- Subtext -->
+        <p class="hero__body">
+          We build, run, and drive results through custom built retention systems —
+          designed for brands serious about compounding growth.
+        </p>
+
+        <!-- Stat chips -->
+        <div class="hero__chips">
+          <div class="hero__chip">20+ Brands Served</div>
+          <div class="hero__chip">11.2x Avg. ROI</div>
+          <div class="hero__chip">30% Avg. Revenue Lift</div>
+        </div>
+
+        <!-- CTAs -->
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#book">Book a Free Call</a>
+          <a class="btn btn--ghost" href="#pricing">Explore Pricing</a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         STATS BANNER
+         ============================================================ -->
+    <section class="stats-banner" aria-label="Key statistics">
+      <div class="stats-banner__inner">
+
+        <div class="stats-banner__item reveal" data-delay="1">
+          <span class="stats-banner__value">$2M+</span>
+          <span class="stats-banner__label">Revenue Generated</span>
+        </div>
+
+        <div class="stats-banner__item reveal" data-delay="2">
+          <span class="stats-banner__value">20+</span>
+          <span class="stats-banner__label">E-commerce Brands</span>
+        </div>
+
+        <div class="stats-banner__item reveal" data-delay="3">
+          <span class="stats-banner__value">30%</span>
+          <span class="stats-banner__label">Avg. Revenue Lift</span>
+        </div>
+
+        <div class="stats-banner__item reveal" data-delay="4">
+          <span class="stats-banner__value">14 Days</span>
+          <span class="stats-banner__label">To Go Live</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         3-STAGE SYSTEM
+         ============================================================ -->
+    <section class="flow-visual" id="features">
+      <!-- Subtle bg grid -->
+      <div class="flow-visual__bg-grid" aria-hidden="true"></div>
+
+      <!-- Section header -->
+      <div class="flow-visual__header reveal">
+        <p class="eyebrow">How It Works</p>
+        <h2 class="section-title">Our 3-Stage Retention System</h2>
+        <p class="section-sub">
+          A complete, done-for-you retention engine — built, managed, and optimised
+          specifically for your brand.
+        </p>
+      </div>
+
+      <!-- Main layout: animation column + detail cards -->
+      <div class="flow-visual__layout">
+
+        <!-- Left: boxes connected by canvas line -->
+        <div class="flow-visual__animation" id="flow-animation">
+          <canvas id="flow-canvas" aria-hidden="true"></canvas>
+
+          <div class="flow-visual__boxes">
+
+            <div class="component-box is-active" id="flow-box-0" data-stage="0" role="button" tabindex="0" aria-label="Stage 1: Build">
+              <div class="component-box__icon">
+                <!-- Automated / pencil icon -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+                </svg>
+              </div>
+              <div class="component-box__label">Build</div>
+            </div>
+
+            <div class="component-box" id="flow-box-1" data-stage="1" role="button" tabindex="0" aria-label="Stage 2: Analyse">
+              <div class="component-box__icon">
+                <!-- Analytics / bar chart icon -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <line x1="18" y1="20" x2="18" y2="10"/>
+                  <line x1="12" y1="20" x2="12" y2="4"/>
+                  <line x1="6"  y1="20" x2="6"  y2="14"/>
+                  <rect x="4" y="2" width="16" height="20" rx="0" opacity="0"/>
+                </svg>
+              </div>
+              <div class="component-box__label">Analyse</div>
+            </div>
+
+            <div class="component-box" id="flow-box-2" data-stage="2" role="button" tabindex="0" aria-label="Stage 3: Grow">
+              <div class="component-box__icon">
+                <!-- Growth / trending up icon -->
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/>
+                  <polyline points="16 7 22 7 22 13"/>
+                </svg>
+              </div>
+              <div class="component-box__label">Grow</div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Right: detail cards -->
+        <div class="flow-detail-list" id="flow-detail-list">
+
+          <!-- Stage 01 — Automated Campaigns -->
+          <article
+            class="flow-detail-card flow-detail-card--0 is-active"
+            data-stage="0"
+            aria-label="Stage 01: Build — Automated Campaigns"
+          >
+            <div class="flow-detail-card__cover" style="background: linear-gradient(135deg, #060d1f 0%, #1e40af 50%, #3b82f6 100%);">
+              <div class="flow-detail-card__icon-large" aria-hidden="true">⏰</div>
+            </div>
+            <div class="flow-detail-card__meta">
+              <p class="flow-detail-card__subtitle">Stage 01 · Build</p>
+              <h3 class="flow-detail-card__title">Automated Campaigns</h3>
+              <p class="flow-detail-card__body">
+                Save time with smart scheduling and personalised email flows. We build your
+                complete retention engine from the ground up — welcome sequences, abandoned
+                cart, post-purchase, win-back, and more — all tailored to your brand and
+                your customers' behaviour.
+              </p>
+            </div>
+          </article>
+
+          <!-- Stage 02 — Real-Time Analytics -->
+          <article
+            class="flow-detail-card flow-detail-card--1"
+            data-stage="1"
+            aria-label="Stage 02: Analyse — Real-Time Analytics"
+          >
+            <div class="flow-detail-card__cover" style="background: linear-gradient(135deg, #0a0f20 0%, #3b82f6 100%);">
+              <div class="flow-detail-card__icon-large" aria-hidden="true">📊</div>
+            </div>
+            <div class="flow-detail-card__meta">
+              <p class="flow-detail-card__subtitle">Stage 02 · Analyse</p>
+              <h3 class="flow-detail-card__title">Real-Time Analytics</h3>
+              <p class="flow-detail-card__body">
+                Track performance instantly and make data-driven decisions. Our advanced
+                reporting surfaces cohort lift, campaign vs. flow revenue split, revenue
+                per recipient, and deliverability health — so you always know exactly
+                what's working and why.
+              </p>
+            </div>
+          </article>
+
+          <!-- Stage 03 — Seamless Integrations -->
+          <article
+            class="flow-detail-card flow-detail-card--2"
+            data-stage="2"
+            aria-label="Stage 03: Grow — Seamless Integrations"
+          >
+            <div class="flow-detail-card__cover" style="background: linear-gradient(135deg, #0a0f1a 0%, #1e3a8a 50%, #60a5fa 100%);">
+              <div class="flow-detail-card__icon-large" aria-hidden="true">🚀</div>
+            </div>
+            <div class="flow-detail-card__meta">
+              <p class="flow-detail-card__subtitle">Stage 03 · Grow</p>
+              <h3 class="flow-detail-card__title">Seamless Integrations</h3>
+              <p class="flow-detail-card__body">
+                Connect with Klaviyo, Shopify, and your favourite tools in minutes. We
+                coordinate email, SMS, and popup channels into one unified retention system
+                that compounds customer LTV over time — driving predictable, recurring
+                revenue without additional ad spend.
+              </p>
+            </div>
+          </article>
+
+          <!-- Stage nav dots -->
+          <div class="flow-stage-dots" role="tablist" aria-label="Stage navigation">
+            <button class="flow-stage-dot is-active" data-stage="0" role="tab" aria-label="Go to Stage 1: Build" aria-selected="true"></button>
+            <button class="flow-stage-dot"           data-stage="1" role="tab" aria-label="Go to Stage 2: Analyse" aria-selected="false"></button>
+            <button class="flow-stage-dot"           data-stage="2" role="tab" aria-label="Go to Stage 3: Grow" aria-selected="false"></button>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         PRICING
+         ============================================================ -->
+    <section class="pricing-section" id="pricing">
+
+      <div class="pricing-section__header reveal">
+        <p class="eyebrow">Pricing Plans</p>
+        <h2 class="section-title">Choose Your Growth Path</h2>
+        <p class="section-sub">Scalable retention solutions designed for brands at every stage</p>
+      </div>
+
+      <div class="pricing-table">
+
+        <!-- ---- CORE ---- -->
+        <div class="pricing-card reveal" data-delay="1">
+          <h3 class="plan-name">Ascension Core</h3>
+          <p class="plan-desc">Perfect for small businesses getting started with email marketing</p>
+
+          <div class="plan-price">
+            <div class="plan-price__context">For brands over:</div>
+            <div class="plan-price__value">$20k<span class="plan-price__period">/month</span></div>
+          </div>
+
+          <ul class="feature-list">
+            <li><span class="feature-name">Active Flows</span>        <span class="feature-value feature-value--yes">4</span></li>
+            <li><span class="feature-name">Campaigns</span>           <span class="feature-value">8 p/m</span></li>
+            <li><span class="feature-name">Segmentation</span>        <span class="feature-value">Basic</span></li>
+            <li><span class="feature-name">A/B Testing</span>         <span class="feature-value feature-value--no">✕</span></li>
+            <li><span class="feature-name">Reporting</span>           <span class="feature-value">Standard</span></li>
+            <li><span class="feature-name">Strategy</span>            <span class="feature-value">Monthly</span></li>
+            <li><span class="feature-name">Popup Testing</span>       <span class="feature-value">1 active</span></li>
+            <li><span class="feature-name">SMS</span>                 <span class="feature-value feature-value--no">✕</span></li>
+            <li><span class="feature-name">Performance Guarantee</span><span class="feature-value feature-value--no">✕</span></li>
+          </ul>
+
+          <a class="cta-button" href="#book">Book a Call</a>
+        </div>
+
+        <!-- ---- SCALE (featured) ---- -->
+        <div class="pricing-card pricing-card--featured reveal" data-delay="2">
+          <div class="pricing-card__badge">MOST POPULAR</div>
+          <h3 class="plan-name">Ascension Scale</h3>
+          <p class="plan-desc">Advanced features for growing businesses ready to scale</p>
+
+          <div class="plan-price">
+            <div class="plan-price__context">For brands over:</div>
+            <div class="plan-price__value">$50k<span class="plan-price__period">/month</span></div>
+          </div>
+
+          <ul class="feature-list">
+            <li><span class="feature-name">Active Flows</span>        <span class="feature-value feature-value--yes">8</span></li>
+            <li><span class="feature-name">Campaigns</span>           <span class="feature-value">12 p/m</span></li>
+            <li><span class="feature-name">Segmentation</span>        <span class="feature-value">Advanced</span></li>
+            <li><span class="feature-name">A/B Testing</span>         <span class="feature-value feature-value--yes">✓</span></li>
+            <li><span class="feature-name">Reporting</span>           <span class="feature-value">Advanced</span></li>
+            <li><span class="feature-name">Strategy</span>            <span class="feature-value">Bi-weekly</span></li>
+            <li><span class="feature-name">Popup Testing</span>       <span class="feature-value">3 active</span></li>
+            <li><span class="feature-name">SMS</span>                 <span class="feature-value feature-value--yes">✓</span></li>
+            <li><span class="feature-name">Performance Guarantee</span><span class="feature-value feature-value--yes">✓</span></li>
+          </ul>
+
+          <a class="cta-button" href="#book">Book a Call</a>
+        </div>
+
+        <!-- ---- ELITE ---- -->
+        <div class="pricing-card reveal" data-delay="3">
+          <h3 class="plan-name">Ascension Elite</h3>
+          <p class="plan-desc">Enterprise solution with custom features and dedicated support</p>
+
+          <div class="plan-price">
+            <div class="plan-price__context">For brands over:</div>
+            <div class="plan-price__value">$200k<span class="plan-price__period">/month</span></div>
+          </div>
+
+          <ul class="feature-list">
+            <li><span class="feature-name">Active Flows</span>        <span class="feature-value feature-value--yes">Unlimited</span></li>
+            <li><span class="feature-name">Campaigns</span>           <span class="feature-value">Unlimited</span></li>
+            <li><span class="feature-name">Segmentation</span>        <span class="feature-value">Custom</span></li>
+            <li><span class="feature-name">A/B Testing</span>         <span class="feature-value feature-value--yes">✓</span></li>
+            <li><span class="feature-name">Reporting</span>           <span class="feature-value">Custom</span></li>
+            <li><span class="feature-name">Strategy</span>            <span class="feature-value">Weekly</span></li>
+            <li><span class="feature-name">Popup Testing</span>       <span class="feature-value feature-value--yes">Unlimited</span></li>
+            <li><span class="feature-name">SMS</span>                 <span class="feature-value feature-value--yes">✓</span></li>
+            <li><span class="feature-name">Performance Guarantee</span><span class="feature-value feature-value--yes">✓</span></li>
+          </ul>
+
+          <a class="cta-button cta-button--ghost" href="#book">Book a Call</a>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         RESULTS
+         ============================================================ -->
+    <section class="results" id="results">
+      <div class="results__inner">
+
+        <div class="results__copy reveal">
+          <p class="eyebrow">Results</p>
+          <h2 class="section-title">30%+ avg. revenue driven by our systems</h2>
+          <p class="results__body">
+            Ascension builds retention engines that compound LTV — no extra paid spend
+            required. We track contribution by cohort, campaign, and channel to prove lift
+            and keep your monthly revenue predictable and growing.
+          </p>
+        </div>
+
+        <div class="results__stats">
+          <div class="results__stat reveal" data-delay="1">
+            <div class="results__stat-value">11.2x</div>
+            <div class="results__stat-label">Average client ROI</div>
+          </div>
+          <div class="results__stat reveal" data-delay="2">
+            <div class="results__stat-value">30%+</div>
+            <div class="results__stat-label">Avg. retention revenue contribution</div>
+          </div>
+          <div class="results__stat reveal" data-delay="3">
+            <div class="results__stat-value">90 days</div>
+            <div class="results__stat-label">To unlock compounding lift</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ============================================================
+         CTA + CALENDLY
+         ============================================================ -->
+    <section class="cta-section" id="book">
+      <div class="cta-section__inner reveal">
+        <p class="eyebrow">Get Started</p>
+        <h2 class="section-title">Ready to Grow Your Email Revenue?</h2>
+        <p class="cta-section__body">
+          Book a free strategy call — no commitment, just results. We'll audit your
+          current email program and show you exactly how much revenue you're leaving on the table.
+        </p>
+        <div class="cta-section__actions">
+          <a class="btn btn--primary" href="https://calendly.com/chris-ascensionsoftware/30min" target="_blank" rel="noopener noreferrer">
+            Book a Free Call
+          </a>
+          <a class="btn btn--ghost" href="#pricing">View Pricing</a>
+        </div>
+      </div>
+
+      <!-- Calendly inline widget -->
+      <div class="calendly-wrapper">
+        <div
+          class="calendly-inline-widget"
+          data-url="https://calendly.com/chris-ascensionsoftware/30min"
+          style="min-width:320px;height:700px;"
+        ></div>
+      </div>
+    </section>
+
+    <!-- ============================================================
+         FAQ
+         ============================================================ -->
+    <section class="faq-section" id="contact">
+      <div class="faq-container">
+
+        <div class="faq-header reveal">
+          <p class="eyebrow">FAQ</p>
+          <h2 class="section-title">Frequently Asked Questions</h2>
+        </div>
+
+        <!-- FAQ items are injected by script.js -->
+        <div class="faq-list" id="faq-list" role="list"></div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
+  <footer class="site-footer">
+    <div class="site-footer__inner">
+
+      <div class="site-footer__brand">
+        <span class="site-footer__logo">Ascension Software</span>
+        <p class="site-footer__tagline">Smart Email Marketing for Growing Brands</p>
+      </div>
+
+      <nav class="site-footer__nav" aria-label="Footer navigation">
+        <a href="#hero">Home</a>
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#book">Book a Call</a>
+      </nav>
+
+      <p class="site-footer__copy">
+        © <span id="year"></span> Ascension Software. All rights reserved.
+      </p>
+
+    </div>
+  </footer>
+
+  <!-- Calendly widget JS -->
+  <script src="https://assets.calendly.com/assets/external/widget.js" async></script>
+
+  <!-- Site JS -->
+  <script src="script.js"></script>
+
+</body>
+</html>
