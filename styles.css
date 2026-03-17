@@ -806,13 +806,70 @@ body.has-custom-cursor button { cursor: none; }
 }
 
 /* =====================================================
+   CLIENT LOGO BAR
+   ===================================================== */
+.logo-bar {
+  padding: 2rem 0;
+  text-align: center;
+  overflow: hidden;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.logo-bar__label {
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 1.25rem;
+}
+.logo-bar__track {
+  width: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%);
+}
+.logo-bar__scroll {
+  display: flex;
+  gap: 3rem;
+  width: max-content;
+  animation: logo-scroll 25s linear infinite;
+}
+.logo-bar__logo {
+  flex-shrink: 0;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  opacity: 0.5;
+  white-space: nowrap;
+  letter-spacing: 0.02em;
+  transition: opacity 0.3s;
+}
+.logo-bar__logo:hover { opacity: 0.85; }
+
+@keyframes logo-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@media (max-width: 768px) {
+  .logo-bar { padding: 1.5rem 0; }
+  .logo-bar__scroll { gap: 2rem; }
+  .logo-bar__logo { font-size: 0.9375rem; }
+}
+
+/* =====================================================
    STATS BANNER
    ===================================================== */
 .stats-banner {
   background: transparent;
-  padding: 1.25rem 2rem 5rem;
+  padding: 1.25rem 2rem 1.25rem;
   position: relative;
   z-index: 3;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 .stats-banner__inner {
   position: relative;
@@ -1182,6 +1239,11 @@ body.has-custom-cursor button { cursor: none; }
   font-weight: 700;
   color: var(--green);
   letter-spacing: 0.03em;
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.testimonial-card__pfp:hover {
+  box-shadow: 0 0 20px rgba(0, 140, 255, 0.5), 0 0 40px rgba(0, 140, 255, 0.25);
+  border-color: rgba(0, 140, 255, 0.7);
 }
 .testimonial-card__pfp img {
   width: 100%;
@@ -1362,6 +1424,11 @@ body.has-custom-cursor button { cursor: none; }
   overflow: hidden;
   border: 2px solid rgba(0, 217, 255, 0.3);
   background: rgba(255, 255, 255, 0.04);
+  transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+.team-card__photo:hover {
+  box-shadow: 0 0 20px rgba(0, 140, 255, 0.5), 0 0 40px rgba(0, 140, 255, 0.25);
+  border-color: rgba(0, 140, 255, 0.7);
 }
 .team-card__photo img {
   width: 100%;
@@ -1692,7 +1759,8 @@ body.has-custom-cursor button { cursor: none; }
    ===================================================== */
 .hero-rings {
   position: absolute;
-  top: 22%;
+  bottom: auto;
+  top: 45%;
   left: 50%;
   width: 0;
   height: 0;
@@ -1708,38 +1776,38 @@ body.has-custom-cursor button { cursor: none; }
 }
 
 .hr-1 {
-  width: 200px; height: 200px;
-  margin: -100px 0 0 -100px;
+  width: 300px; height: 300px;
+  margin: -150px 0 0 -150px;
   border: 1px solid rgba(0,217,255,0.66);
   animation: hrSpin 16s linear infinite;
 }
 .hr-2 {
-  width: 360px; height: 360px;
-  margin: -180px 0 0 -180px;
+  width: 540px; height: 540px;
+  margin: -270px 0 0 -270px;
   border: 1px solid rgba(0,217,255,0.46);
   animation: hrSpin 26s linear infinite reverse;
 }
 .hr-3 {
-  width: 540px; height: 540px;
-  margin: -270px 0 0 -270px;
+  width: 810px; height: 810px;
+  margin: -405px 0 0 -405px;
   border: 1px dashed rgba(0,217,255,0.31);
   animation: hrSpin 40s linear infinite;
 }
 .hr-4 {
-  width: 720px; height: 720px;
-  margin: -360px 0 0 -360px;
+  width: 1080px; height: 1080px;
+  margin: -540px 0 0 -540px;
   border: 1px solid rgba(0,217,255,0.20);
   animation: hrSpin 58s linear infinite reverse;
 }
 .hr-5 {
-  width: 900px; height: 900px;
-  margin: -450px 0 0 -450px;
+  width: 1350px; height: 1350px;
+  margin: -675px 0 0 -675px;
   border: 1px dashed rgba(0,217,255,0.13);
   animation: hrSpin 80s linear infinite;
 }
 .hr-6 {
-  width: 1080px; height: 1080px;
-  margin: -540px 0 0 -540px;
+  width: 1620px; height: 1620px;
+  margin: -810px 0 0 -810px;
   border: 1px solid rgba(0,217,255,0.08);
   animation: hrSpin 110s linear infinite reverse;
 }
@@ -2290,4 +2358,45 @@ body.has-custom-cursor button { cursor: none; }
   .gmail-search-bar { display: none; }
   .gmail-email-row { padding: 10px 12px; gap: 8px; }
   .gmail-email-row__content { flex-direction: column; gap: 1px; }
+}
+
+/* =====================================================
+   STICKY MOBILE CTA
+   ===================================================== */
+.sticky-mobile-cta {
+  display: none;              /* hidden by default, shown via JS */
+  position: fixed;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  z-index: 900;
+  padding: 0.875rem 1.75rem;
+  font-family: var(--font);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: #0F172A;
+  background: var(--green);
+  border-radius: 50px;
+  box-shadow: 0 4px 24px rgba(0, 217, 255, 0.35), 0 0 0 1px rgba(0, 217, 255, 0.2);
+  text-decoration: none;
+  align-items: center;
+  gap: 0.5rem;
+  transition: transform 0.4s var(--ease), opacity 0.4s var(--ease), background 0.2s;
+  opacity: 0;
+  white-space: nowrap;
+}
+.sticky-mobile-cta svg { flex-shrink: 0; }
+.sticky-mobile-cta.is-visible {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+.sticky-mobile-cta:active {
+  background: var(--green-hover);
+}
+/* Only show on mobile / small screens */
+@media (min-width: 769px) {
+  .sticky-mobile-cta { display: none !important; }
+}
+@media (max-width: 768px) {
+  .sticky-mobile-cta { display: flex; }
 }

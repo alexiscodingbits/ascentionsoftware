@@ -508,6 +508,38 @@ function initScrollReveal() {
     faqList.appendChild(item);
   });
 
+  /* -- Inject FAQ + Organization JSON-LD for SEO -- */
+  const faqSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faqs.map(({ q, a }) => ({
+      '@type': 'Question',
+      name: q,
+      acceptedAnswer: {
+        '@type': 'Answer',
+        text: a.replace(/\n/g, ' '),
+      },
+    })),
+  };
+
+  const orgSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    name: 'Ascension Software',
+    url: 'https://ascensionsoftware.co',
+    description: 'We build, run, and drive results through custom email retention systems for growing e-commerce brands.',
+    email: 'chris@ascensionsoftware.co',
+    areaServed: 'Worldwide',
+    foundingLocation: 'United Kingdom',
+  };
+
+  [faqSchema, orgSchema].forEach((schema) => {
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(schema);
+    document.head.appendChild(script);
+  });
+
   faqList.addEventListener('click', (e) => {
     const btn = e.target.closest('.faq-question');
     if (!btn) return;
@@ -1095,6 +1127,23 @@ function initFloatingStats() {
     targetRotX = baseRotX + (0.5 - y) * 8;   // +/-4 deg
     startRaf();
   });
+})();
+
+
+/* =====================================================
+   14. STICKY MOBILE CTA — show after scrolling past hero
+   ===================================================== */
+(function initStickyMobileCta() {
+  const cta = document.getElementById('sticky-mobile-cta');
+  const hero = document.getElementById('hero');
+  if (!cta || !hero) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    // Show CTA when hero is NOT intersecting (scrolled past it)
+    cta.classList.toggle('is-visible', !entries[0].isIntersecting);
+  }, { threshold: 0 });
+
+  observer.observe(hero);
 })();
 
 
