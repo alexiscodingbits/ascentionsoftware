@@ -821,6 +821,7 @@ body.has-custom-cursor button { cursor: none; }
   .hero-dash-kpi-row { grid-template-columns: repeat(2, 1fr); }
   .hero-dash-middle-row { grid-template-columns: 1fr; }
   .hero-dash-bottom-row { grid-template-columns: 1fr; }
+  .hero-dash-mobile-hide { display: none; }
 }
 
 /* =====================================================
