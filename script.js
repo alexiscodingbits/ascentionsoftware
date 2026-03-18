@@ -5,306 +5,7 @@
 'use strict';
 
 /* =====================================================
-   1. INTRO SCREEN — Gmail Mock + Warp Animation
-   ===================================================== */
-function initIntroScreen() {
-  const introScreen    = document.getElementById('intro-screen');
-  const gmailEmpty     = document.getElementById('gmail-empty');
-  const gmailEmailList = document.getElementById('gmail-email-list');
-  const gmailBadge     = document.getElementById('gmail-badge');
-  const warpCanvas     = document.getElementById('warp-canvas');
-  const warpFlash      = document.getElementById('warp-flash');
-
-  if (!introScreen) {
-    initScrollReveal();
-    initFloatingStats();
-    initStatsBannerComet();
-    return;
-  }
-
-  /* ---- Build email row ---- */
-  function createEmailRow() {
-    const row = document.createElement('div');
-    row.className = 'gmail-email-row';
-    row.setAttribute('role', 'button');
-    row.setAttribute('tabindex', '0');
-    row.setAttribute('aria-label', 'Open email from Ascension Software');
-    row.innerHTML = `
-      <div class="gmail-email-row__checkbox" aria-hidden="true"></div>
-      <div class="gmail-email-row__star" aria-hidden="true">☆</div>
-      <div class="gmail-email-row__avatar" aria-hidden="true">A</div>
-      <div class="gmail-email-row__content">
-        <span class="gmail-email-row__sender">Chris @ Ascension</span>
-        <span class="gmail-email-row__subject">&nbsp;— Your brand is leaving 30% revenue on the table</span>
-        <span class="gmail-email-row__preview">Hi there, most e-commerce brands running paid ads are missing their biggest revenue lever...</span>
-      </div>
-      <div class="gmail-email-row__meta">
-        <div class="gmail-email-row__unread-dot" aria-hidden="true"></div>
-        <span class="gmail-email-row__time">Just now</span>
-      </div>
-    `;
-    return row;
-  }
-
-  /* ---- Phase 1: Appear after 1s ---- */
-  let emailRow = null;
-  let warpStarted = false;
-
-  setTimeout(() => {
-    // Fade empty state out
-    gmailEmpty.classList.add('is-hidden');
-
-    // Inject + animate email row in
-    emailRow = createEmailRow();
-    gmailEmailList.appendChild(emailRow);
-
-    // Double rAF ensures the initial hidden state is painted before the animation class is set
-    requestAnimationFrame(() => requestAnimationFrame(() => {
-      emailRow.classList.add('is-entering');
-    }));
-
-    // Show badge
-    if (gmailBadge) {
-      gmailBadge.textContent = '1';
-      gmailBadge.classList.add('has-count');
-    }
-
-    // Add click hint below email
-    const hint = document.createElement('div');
-    hint.className = 'gmail-click-hint';
-    hint.textContent = 'Click to open →';
-    gmailEmailList.appendChild(hint);
-
-    // Attach click / keyboard handler
-    emailRow.addEventListener('click', startWarp);
-    emailRow.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); startWarp(); }
-    });
-  }, 1000);
-
-  /* ---- Phase 2: Warp ---- */
-  function startWarp() {
-    if (warpStarted) return;
-    warpStarted = true;
-
-    emailRow.removeEventListener('click', startWarp);
-    emailRow.classList.add('is-clicked');
-
-    // Slight delay so the click glow is visible
-    setTimeout(runWarpAnimation, 280);
-  }
-
-  function runWarpAnimation() {
-    const ctx = warpCanvas.getContext('2d');
-    warpCanvas.width  = window.innerWidth;
-    warpCanvas.height = window.innerHeight;
-    warpCanvas.classList.add('is-active');
-
-    const cx = warpCanvas.width  / 2;
-    const cy = warpCanvas.height / 2;
-    const maxR = Math.sqrt(cx * cx + cy * cy) * 1.35;
-
-    const NUM_STREAKS = 110;
-    const DURATION    = 900; // ms
-
-    // Generate streak data
-    const streaks = Array.from({ length: NUM_STREAKS }, (_, i) => ({
-      angle:     (i / NUM_STREAKS) * Math.PI * 2 + (Math.random() - 0.5) * 0.12,
-      speed:     0.45 + Math.random() * 0.55,
-      baseWidth: 0.4  + Math.random() * 1.8,
-      hue:       210  + Math.random() * 45,   // blue-violet range
-      bright:    60   + Math.random() * 30,
-    }));
-
-    // CSS zoom animation starts slightly after canvas (visual layering)
-    setTimeout(() => introScreen.classList.add('warp-active'), 120);
-
-    const startTime = performance.now();
-
-    function renderFrame(ts) {
-      const elapsed  = ts - startTime;
-      const rawProg  = Math.min(elapsed / DURATION, 1);
-      // Cubic ease-in: slow start, explosive finish
-      const eased    = rawProg * rawProg * rawProg;
-      const midEased = rawProg * rawProg; // quadratic for secondary effects
-
-      ctx.clearRect(0, 0, warpCanvas.width, warpCanvas.height);
-
-      // Dark space behind streaks — deepens over time
-      ctx.fillStyle = `rgba(0, 6, 28, ${Math.min(rawProg * 0.9, 0.88)})`;
-      ctx.fillRect(0, 0, warpCanvas.width, warpCanvas.height);
-
-      // Warp streaks
-      streaks.forEach((s) => {
-        const prog     = Math.min(eased * s.speed, 1);
-        const headDist = maxR * prog * 1.1;
-        const tailDist = headDist * (1 - Math.min(midEased * 0.5, 0.6));
-
-        // Clamp to canvas bounds
-        const sx = cx + Math.cos(s.angle) * Math.max(tailDist, 0);
-        const sy = cy + Math.sin(s.angle) * Math.max(tailDist, 0);
-        const ex = cx + Math.cos(s.angle) * Math.min(headDist, maxR * 1.3);
-        const ey = cy + Math.sin(s.angle) * Math.min(headDist, maxR * 1.3);
-
-        const alpha = Math.min(1, rawProg * 3.5) * s.speed;
-        const lw    = s.baseWidth * (1 + eased * 3.5);
-
-        const grad = ctx.createLinearGradient(sx, sy, ex, ey);
-        grad.addColorStop(0,   `hsla(${s.hue}, 90%, ${s.bright}%, 0)`);
-        grad.addColorStop(0.3, `hsla(${s.hue}, 90%, ${s.bright}%, ${alpha * 0.5})`);
-        grad.addColorStop(1,   `hsla(${s.hue}, 95%, 90%, ${alpha})`);
-
-        ctx.beginPath();
-        ctx.moveTo(sx, sy);
-        ctx.lineTo(ex, ey);
-        ctx.strokeStyle = grad;
-        ctx.lineWidth   = lw;
-        ctx.lineCap     = 'round';
-        ctx.stroke();
-      });
-
-      // Central white-blue supernova grows in final 40%
-      if (rawProg > 0.42) {
-        const gProg  = (rawProg - 0.42) / 0.58;
-        const gR     = maxR * gProg * 0.75;
-        const gGrad  = ctx.createRadialGradient(cx, cy, 0, cx, cy, gR);
-        gGrad.addColorStop(0,    `rgba(255, 255, 255, ${gProg * 1.0})`);
-        gGrad.addColorStop(0.08, `rgba(207, 250, 254, ${gProg * 0.95})`);
-        gGrad.addColorStop(0.2,  `rgba(153, 240, 255, ${gProg * 0.75})`); // blue-300
-        gGrad.addColorStop(0.5,  `rgba(0,  217, 255, ${gProg * 0.45})`); // blue-500
-        gGrad.addColorStop(1,    'rgba(0, 0, 0, 0)');
-        ctx.fillStyle = gGrad;
-        ctx.fillRect(0, 0, warpCanvas.width, warpCanvas.height);
-      }
-
-      if (rawProg < 1) {
-        requestAnimationFrame(renderFrame);
-      } else {
-        triggerFlash();
-      }
-    }
-
-    requestAnimationFrame(renderFrame);
-  }
-
-  function triggerFlash() {
-    // Full-screen blue-white flash
-    warpFlash.classList.add('is-active');
-
-    setTimeout(() => {
-      // Fade the flash out
-      warpFlash.style.transition = 'opacity 0.55s ease';
-      warpFlash.classList.remove('is-active');
-
-      // Remove intro screen (flash still fading over it)
-      introScreen.style.display = 'none';
-
-      // Ensure the page always starts at the very top
-      window.scrollTo(0, 0);
-
-      // Activate the custom cursor now that we're on the main site
-      document.body.classList.add('has-custom-cursor');
-
-      // Kick off scroll reveal, floating stats, and comet on the main site
-      initScrollReveal();
-      initFloatingStats();
-      initStatsBannerComet();
-    }, 160);
-  }
-}
-
-/* =====================================================
-   2. CUSTOM CURSOR + CANVAS TRACER (disabled)
-   ===================================================== */
-/* (function initCursorAndTracer() {
-  const cursorEl    = document.getElementById('custom-cursor');
-  const tracerCanvas = document.getElementById('tracer-canvas');
-  if (!cursorEl || !tracerCanvas) return;
-
-  const isCoarse = window.matchMedia('(pointer: coarse)').matches;
-  if (isCoarse) {
-    cursorEl.style.display = 'none';
-    tracerCanvas.style.display = 'none';
-    document.body.classList.remove('has-custom-cursor');
-    return;
-  }
-
-  const ctx = tracerCanvas.getContext('2d');
-  let targetX = window.innerWidth  / 2;
-  let targetY = window.innerHeight / 2;
-  let smoothX = targetX;
-  let smoothY = targetY;
-  const EASE  = 0.16;
-
-  const trail    = [];
-  const MAX_TRAIL = 42;
-
-  function resizeCanvas() {
-    tracerCanvas.width  = window.innerWidth;
-    tracerCanvas.height = window.innerHeight;
-  }
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas, { passive: true });
-
-  window.addEventListener('mousemove', (e) => {
-    targetX = e.clientX;
-    targetY = e.clientY;
-    // Only show custom cursor after intro is dismissed
-    if (document.body.classList.contains('has-custom-cursor')) {
-      cursorEl.classList.add('is-visible');
-    }
-  }, { passive: true });
-
-  function attachHoverListeners() {
-    const sel = 'a, button, .faq-question, .pricing-card, .cta-button, .btn, .gmail-email-row';
-    document.querySelectorAll(sel).forEach((el) => {
-      el.addEventListener('mouseenter', () => cursorEl.classList.add('is-hovering'));
-      el.addEventListener('mouseleave', () => cursorEl.classList.remove('is-hovering'));
-    });
-  }
-  attachHoverListeners();
-  // Re-attach after FAQ items are injected
-  setTimeout(attachHoverListeners, 1500);
-
-  function animate() {
-    smoothX += (targetX - smoothX) * EASE;
-    smoothY += (targetY - smoothY) * EASE;
-
-    cursorEl.style.transform = `translate3d(${smoothX}px, ${smoothY}px, 0) translate(-50%, -50%)`;
-
-    // Only render tracer on the main site (not during intro)
-    if (document.body.classList.contains('has-custom-cursor')) {
-      trail.push({ x: smoothX, y: smoothY });
-      if (trail.length > MAX_TRAIL) trail.shift();
-
-      ctx.clearRect(0, 0, tracerCanvas.width, tracerCanvas.height);
-      if (trail.length > 1) {
-        for (let i = 1; i < trail.length; i++) {
-          const alpha = (i / trail.length) * 0.5;
-          const width = (i / trail.length) * 2.5;
-          ctx.beginPath();
-          ctx.moveTo(trail[i - 1].x, trail[i - 1].y);
-          ctx.lineTo(trail[i].x, trail[i].y);
-          ctx.strokeStyle = `rgba(0, 217, 255, ${alpha})`;
-          ctx.lineWidth   = width;
-          ctx.lineCap     = 'round';
-          ctx.lineJoin    = 'round';
-          ctx.stroke();
-        }
-      }
-    } else {
-      // Clear any accidental marks and reset trail
-      trail.length = 0;
-      ctx.clearRect(0, 0, tracerCanvas.width, tracerCanvas.height);
-    }
-    requestAnimationFrame(animate);
-  }
-  animate();
-})(); */
-
-
-/* =====================================================
-   3. MOBILE NAV TOGGLE
+   1. MOBILE NAV TOGGLE
    ===================================================== */
 (function initMobileNav() {
   const toggleBtn = document.getElementById('menu-toggle');
@@ -334,7 +35,7 @@ function initIntroScreen() {
 
 
 /* =====================================================
-   4. HEADER SCROLL EFFECT
+   2. HEADER SCROLL EFFECT
    ===================================================== */
 (function initHeaderScroll() {
   const header = document.getElementById('site-header');
@@ -346,7 +47,7 @@ function initIntroScreen() {
 
 
 /* =====================================================
-   5. SCROLL REVEAL — called after intro or immediately
+   3. SCROLL REVEAL
    ===================================================== */
 function initScrollReveal() {
   const elements = document.querySelectorAll('.reveal');
@@ -366,7 +67,7 @@ function initScrollReveal() {
 
 
 /* =====================================================
-   6. FLOW VISUAL — Canvas Line + Active Stage
+   4. FLOW VISUAL — Canvas Line + Active Stage
    ===================================================== */
 /* =====================================================
    6b. STACKING CARDS — scroll-driven card stacking
@@ -442,7 +143,7 @@ function initScrollReveal() {
 
 
 /* =====================================================
-   7. FAQ ACCORDION
+   5. FAQ ACCORDION
    ===================================================== */
 (function initFAQ() {
   const faqs = [
@@ -564,7 +265,7 @@ function initScrollReveal() {
 
 
 /* =====================================================
-   8. FOOTER YEAR
+   6. FOOTER YEAR
    ===================================================== */
 (function setFooterYear() {
   const el = document.getElementById('year');
@@ -606,7 +307,7 @@ function initScrollReveal() {
 
 
 /* =====================================================
-   9. SMOOTH ANCHOR SCROLL
+   7. SMOOTH ANCHOR SCROLL
    ===================================================== */
 (function initSmoothScroll() {
   document.querySelectorAll('a[href^="#"]').forEach((link) => {
@@ -728,239 +429,6 @@ function initStatsBannerComet() {
   }
 
   requestAnimationFrame(draw);
-}
-
-/* =====================================================
-   11. FLOATING STATS — DVD-logo bounce + drag
-   ===================================================== */
-function initFloatingStats() {
-  if (window.innerWidth < 900) return;
-
-  const statsData = [
-    { value: '$2M+',    label: 'Revenue Generated'  },
-    { value: '20+',     label: 'E-commerce Brands'  },
-    { value: '30%',     label: 'Avg. Revenue Lift'  },
-    { value: '14 Days', label: 'To Go Live'          },
-  ];
-
-  const overlay = document.createElement('div');
-  overlay.id = 'floating-stats-overlay';
-  document.body.appendChild(overlay);
-
-  const CARD_W    = 160;
-  const CARD_H    = 84;
-  const HEADER_H  = 72;
-  const MIN_SPEED = 1.35;
-  const MAX_SPEED = 24;
-  const FRICTION  = 0.979;
-
-  const vw0 = window.innerWidth;
-  const vh0 = window.innerHeight;
-
-  // Stats banner used as the bottom boundary; hero section used to detect scroll-out
-  const statsBanner = document.querySelector('.stats-banner');
-  const heroSection = document.querySelector('#hero');
-
-  function getBounds() {
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    let maxY = vh - CARD_H;
-    if (statsBanner) {
-      const br = statsBanner.getBoundingClientRect();
-      if (br.top < vh) maxY = Math.max(HEADER_H + CARD_H, br.top - CARD_H - 6);
-    }
-    return { minX: 0, maxX: vw - CARD_W, minY: HEADER_H, maxY };
-  }
-
-  const startPositions = [
-    { x: vw0 * 0.06, y: HEADER_H + 40 },
-    { x: vw0 * 0.70, y: HEADER_H + 50 },
-    { x: vw0 * 0.10, y: vh0 * 0.60 },
-    { x: vw0 * 0.74, y: vh0 * 0.56 },
-  ];
-  const startAngles = [
-    Math.PI * 0.28,
-    Math.PI * 1.15,
-    Math.PI * 1.72,
-    Math.PI * 0.62,
-  ];
-
-  const cards = statsData.map((stat, i) => {
-    const el = document.createElement('div');
-    el.className = 'floating-stat';
-    el.innerHTML = `<span class="floating-stat__value">${stat.value}</span>` +
-                   `<span class="floating-stat__label">${stat.label}</span>`;
-    overlay.appendChild(el);
-
-    const speed = MIN_SPEED + i * 0.14;
-    const card = {
-      el,
-      x: startPositions[i].x,
-      y: startPositions[i].y,
-      vx: Math.cos(startAngles[i]) * speed,
-      vy: Math.sin(startAngles[i]) * speed,
-      dragging: false,
-      dragOffX: 0, dragOffY: 0,
-      velSamples: [],
-      _prevX: 0, _prevY: 0, _prevT: 0,
-    };
-
-    el.style.pointerEvents = 'auto';
-    el.style.cursor        = 'grab';
-    el.style.userSelect    = 'none';
-
-    function dragStart(e) {
-      e.preventDefault();
-      card.dragging    = true;
-      card.velSamples  = [];
-      el.style.cursor  = 'grabbing';
-      el.style.zIndex  = '202';
-      const cx = e.touches ? e.touches[0].clientX : e.clientX;
-      const cy = e.touches ? e.touches[0].clientY : e.clientY;
-      card.dragOffX = cx - card.x;
-      card.dragOffY = cy - card.y;
-      card._prevX   = cx;
-      card._prevY   = cy;
-      card._prevT   = performance.now();
-    }
-
-    el.addEventListener('mousedown',  dragStart);
-    el.addEventListener('touchstart', dragStart, { passive: false });
-    return card;
-  });
-
-  // Global pointer-move and pointer-up
-  function onMove(e) {
-    const card = cards.find(c => c.dragging);
-    if (!card) return;
-
-    const cx  = e.touches ? e.touches[0].clientX : e.clientX;
-    const cy  = e.touches ? e.touches[0].clientY : e.clientY;
-    const now = performance.now();
-    const dt  = now - card._prevT;
-
-    if (dt > 0 && dt < 100) {
-      card.velSamples.push({
-        vx: (cx - card._prevX) / dt * 16.67,
-        vy: (cy - card._prevY) / dt * 16.67,
-        t:  now,
-      });
-      if (card.velSamples.length > 6) card.velSamples.shift();
-    }
-    card._prevX = cx;
-    card._prevY = cy;
-    card._prevT = now;
-
-    const { minX, maxX, minY, maxY } = getBounds();
-    card.x = Math.max(minX, Math.min(maxX, cx - card.dragOffX));
-    card.y = Math.max(minY, Math.min(maxY, cy - card.dragOffY));
-    card.el.style.transform = `translate(${card.x}px, ${card.y}px)`;
-  }
-
-  function onUp() {
-    const card = cards.find(c => c.dragging);
-    if (!card) return;
-    card.dragging   = false;
-    card.el.style.cursor = 'grab';
-    card.el.style.zIndex = '';
-
-    // Average recent velocity samples for throw
-    const recent = card.velSamples.filter(s => performance.now() - s.t < 120);
-    if (recent.length > 0) {
-      let tvx = recent.reduce((s, v) => s + v.vx, 0) / recent.length;
-      let tvy = recent.reduce((s, v) => s + v.vy, 0) / recent.length;
-      const spd = Math.sqrt(tvx * tvx + tvy * tvy);
-      const scale = spd > MAX_SPEED ? MAX_SPEED / spd : 1;
-      card.vx = tvx * scale;
-      card.vy = tvy * scale;
-    }
-
-    // Guarantee minimum movement so it never sits still
-    const spd = Math.sqrt(card.vx * card.vx + card.vy * card.vy);
-    if (spd < MIN_SPEED) {
-      const angle = Math.atan2(card.vy || 0.5, card.vx || 0.5);
-      card.vx = Math.cos(angle) * MIN_SPEED;
-      card.vy = Math.sin(angle) * MIN_SPEED;
-    }
-  }
-
-  document.addEventListener('mousemove', onMove);
-  document.addEventListener('mouseup',   onUp);
-  document.addEventListener('touchmove', onMove, { passive: false });
-  document.addEventListener('touchend',  onUp);
-
-  const heroContent = document.querySelector('.hero__content');
-  let running = true;
-
-  function cleanup() {
-    if (!running) return;   // guard against double-call
-    running = false;
-    overlay.style.opacity = '0';
-    document.removeEventListener('mousemove', onMove);
-    document.removeEventListener('mouseup',   onUp);
-    document.removeEventListener('touchmove', onMove);
-    document.removeEventListener('touchend',  onUp);
-    setTimeout(() => { if (overlay.parentNode) overlay.remove(); }, 520);
-  }
-
-  // Use IntersectionObserver — fires the instant the hero leaves the viewport
-  if (heroSection) {
-    const heroObserver = new IntersectionObserver((entries) => {
-      if (!entries[0].isIntersecting) {
-        cleanup();
-        heroObserver.disconnect();
-      }
-    }, { threshold: 0 });
-    heroObserver.observe(heroSection);
-  }
-
-  function tick() {
-    if (!running) return;
-
-    const { minX, maxX, minY, maxY } = getBounds();
-
-    const heroRect = heroContent ? heroContent.getBoundingClientRect() : null;
-
-    cards.forEach(card => {
-      if (card.dragging) return;
-
-      // Apply friction above min speed, then clamp floor
-      const spd = Math.sqrt(card.vx * card.vx + card.vy * card.vy);
-      if (spd > MIN_SPEED) {
-        card.vx *= FRICTION;
-        card.vy *= FRICTION;
-        const newSpd = Math.sqrt(card.vx * card.vx + card.vy * card.vy);
-        if (newSpd < MIN_SPEED) {
-          const s = newSpd > 0.001 ? newSpd : MIN_SPEED;
-          card.vx = (card.vx / s) * MIN_SPEED;
-          card.vy = (card.vy / s) * MIN_SPEED;
-        }
-      }
-
-      card.x += card.vx;
-      card.y += card.vy;
-
-      if (card.x <= minX) { card.x = minX; card.vx =  Math.abs(card.vx); }
-      if (card.x >= maxX) { card.x = maxX; card.vx = -Math.abs(card.vx); }
-      if (card.y <= minY) { card.y = minY; card.vy =  Math.abs(card.vy); }
-      if (card.y >= maxY) { card.y = maxY; card.vy = -Math.abs(card.vy); }
-
-      card.el.style.transform = `translate(${card.x}px, ${card.y}px)`;
-
-      // Fade when centre drifts over hero text
-      if (heroRect) {
-        const cx       = card.x + CARD_W / 2;
-        const cy       = card.y + CARD_H / 2;
-        const overText = cx > heroRect.left + 30 && cx < heroRect.right  - 30 &&
-                         cy > heroRect.top  + 50 && cy < heroRect.bottom - 50;
-        card.el.style.opacity = overText ? '0.18' : '1';
-      }
-    });
-
-    requestAnimationFrame(tick);
-  }
-
-  tick();
 }
 
 
@@ -1148,11 +616,7 @@ function initFloatingStats() {
 
 
 /* =====================================================
-   INIT — start with intro screen
+   INIT
    ===================================================== */
-// initIntroScreen();  // Gmail intro temporarily disabled
-
-// Go straight to the main site
 initScrollReveal();
-// initFloatingStats();  // floating stats disabled
 initStatsBannerComet();
